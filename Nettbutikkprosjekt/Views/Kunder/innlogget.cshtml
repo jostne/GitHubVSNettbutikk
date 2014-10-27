@@ -1,0 +1,51 @@
+﻿@model  List<Nettbutikkprosjekt.Models.Bestilling>
+@{
+    ViewBag.Title = "innlogget";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>InnLoggetSide</title>
+</head>
+<body>
+    <div>
+        <a><b>Du er innlogget som: @Session["Bruker"]</b></a>
+
+        <dl class="dl-horizontal">
+            <dt>
+
+            </dt>
+        </dl>
+        <table>
+            <tr><td>@Html.ActionLink("Endre bruker", "endreBruker", "Kunder")</td>
+            <td>
+    @Html.ActionLink("Logg ut", "logut", "Kunder")</td>
+            </tr>
+            <tr><td><h2> Ordrehistorikk</h2></td> </tr>
+            <tr>
+                <td><b>Produkt navn</b></td>
+                <td><b>Pris</b></td>
+                <td><b>Dato bestilt</b></td>
+            </tr>
+          
+            @foreach (var bestilling in Model)
+            {
+                <tr style="border-bottom:1px solid black;">
+                    <td>@bestilling.produkt.navn</td>
+                    <td>@bestilling.total</td>
+                    <td>@bestilling.dato</td>
+                </tr>
+            }
+        </table>
+
+
+
+        
+
+
+
+    </div>
+</body>
+</html>

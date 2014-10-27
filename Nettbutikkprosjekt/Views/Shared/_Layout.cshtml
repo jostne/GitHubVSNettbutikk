@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div id="container">
+        <div id="block-top">
+            <div class="header"><a href="/Kunder/Home"><img src="~/Bilder/speech.jpg"></a></div>
+            <div id="menu">
+
+
+                <nav id="menu">
+                    <h2>@Html.ActionLink("Hjem", "Home", "Kunder", new { @class = "menu-item" })</h2>
+                    
+                    <h2>@Html.ActionLink("Registrer", "OprettBruker", "Kunder", new { @class = "menu-item float-right" })</h2>
+
+                    <h2>@Html.ActionLink("Min side", "innlogget", "Kunder", new { @class = "menu-item float-right" })</h2>
+
+                </nav>
+
+
+            </div>
+        </div>
+        <div class="wrapper">
+            <div id="block-left">
+                <div class="cat-menu">
+                    <div class="kategori">
+                        <h1>Meny</h1>
+                        <ul>
+                            <li><h2>@Html.ActionLink("Sykler", "sykkel", null, new { @class = "meny-linker" })</h2></li>
+                            <li><h2>  @Html.ActionLink("Deler", "del", null, new { @class = "meny-linker" }) </h2></li>
+                            <li><h2> @Html.ActionLink("Utstyr", "utstyr", null, new { @class = "meny-linker" }) </h2></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="block-content">
+                @RenderBody()
+
+                @Scripts.Render("~/bundles/jquery")
+                @RenderSection("scripts", required: false)
+            </div>
+        </div>
+
+
+
+    </div>
+
+</body>
+</html>

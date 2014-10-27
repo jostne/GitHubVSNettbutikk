@@ -1,0 +1,37 @@
+﻿@model List<Nettbutikkprosjekt.Models.Kunder>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ListAlleKunder</title>
+</head>
+<body>
+    <div>
+        <h3>Her er alle kundene i databasen</h3>
+
+        <table>
+            @foreach (var kunder in Model)
+            {
+                <tr>
+                    <td>@kunder.kundeid</td>
+                    <td>@kunder.epost</td>
+                    <td>@kunder.fornavn</td>
+                    <td>@kunder.etternavn</td>
+                    <td>@kunder.postnr</td>
+                    <td>@kunder.adresse</td>
+                    <td>@kunder.poststed.poststed</td>
+
+                </tr>
+            }
+        </table>
+        @ViewBag.Melding
+        <a href="/Kunder/OprettBruker ">Opprett kunde</a><br />
+        <a href="/Kunder/Opprettprodukt ">Opprett produkt</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+﻿@model Nettbutikkprosjekt.Models.Sikkerkunde
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OprettBruker</title>
+</head>
+<body>
+    <script src="~/Scripts/jquery-1.8.2.minjs"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+    
+
+    <fieldset>
+        <legend>Registrer konto</legend>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.fornavn)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.fornavn)
+            @Html.ValidationMessageFor(model => model.fornavn)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.etternavn)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.etternavn)
+            @Html.ValidationMessageFor(model => model.etternavn)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.epost)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.epost)
+            @Html.ValidationMessageFor(model => model.epost)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.passord)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.passord)
+            @Html.ValidationMessageFor(model => model.passord)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.postnr)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.postnr)
+            @Html.ValidationMessageFor(model => model.postnr)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.adresse)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.adresse)
+            @Html.ValidationMessageFor(model => model.adresse)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.poststed.poststed)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.poststed.poststed)
+            @Html.ValidationMessageFor(model => model.poststed.poststed)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.telefonnr)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.telefonnr)
+            @Html.ValidationMessageFor(model => model.telefonnr)
+        </div>
+        <p>
+            <input type="submit" value="Registrer" />
+        </p>
+    </fieldset>
+    }
+
+</body>
+</html>

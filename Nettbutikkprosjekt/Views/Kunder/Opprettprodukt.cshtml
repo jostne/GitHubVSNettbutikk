@@ -1,0 +1,27 @@
+﻿@model Nettbutikkprosjekt.Models.Produkt
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Opprettprodukt</title>
+</head>
+<body>
+    <div>
+        <form action="/Kunder/Opprettprodukt" method="post">
+            <table>
+                <tr><td>Produktavn: </td><td><input type="text" name="produktnavn" /></td></tr>
+                <tr><td>Pris: </td><td><input type="text" name="pris" /></td></tr>
+                <tr><td>Beskrivelse:</td><td><input type="text" name="beskrivelse" /></td></tr>
+                <tr><td>Kategori:</td><td><input type="text" name="kategori" /></td></tr>
+                <tr><td>Path:</td><td><input type="text" name="path" /></td></tr>
+                <tr><td><input type="submit" value="Opprett produkt" /></td></tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

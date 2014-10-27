@@ -1,0 +1,57 @@
+﻿@model List<Nettbutikkprosjekt.Models.Produkt>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Utstyr</title>
+</head>
+<body>
+    <div>
+        <style>
+            table {
+                border-collapse: collapse !important;
+            }
+
+            #sykkling{
+                height: 120px;
+                width: 160px;
+            }
+        </style>
+        <table>
+            <tr style="border-bottom:1px solid black;">
+                <td align="center" ;><h2>Alt utstyr</h2></td>
+                <td style="padding-left:50px;" align="center" ;><h2>Navn</h2></td>
+                <td style="padding-left:50px;" align="center" ;><h2>Pris</h2></td>
+                <td style="padding-left:50px;" align="center" ;><h2>Antall</h2></td>
+
+            </tr>
+            @foreach (var produkt in Model)
+            {
+                if (produkt.kategori == "Utstyr")
+                {
+                    int pris = Convert.ToInt32(produkt.pris);
+                    <tr style="border-bottom:1px solid black;">
+                        <td><img id="sykkling" src="../../Bilder/@produkt.kategori/@produkt.path" /></td>
+                        <td style="padding-left:50px;" align="center"><h3>@Html.ActionLink(@produkt.navn, "info", new { id = produkt.produktid })</h3></td>
+                        <td style="padding-left:50px;" align="center"><h3>@pris,-</h3></td>
+                        <td style="padding-left:50px;" align="center">
+
+                            <p class="button">
+                                <h3> @Html.ActionLink("Legg til i handlekurv", "AddToCart", "Shoppingcart", new { id = produkt.produktid }, "")</h3>
+                            </p>
+                        </td>
+
+                    </tr>
+                }
+            }
+        </table>
+
+
+    </div>
+</body>
+</html>

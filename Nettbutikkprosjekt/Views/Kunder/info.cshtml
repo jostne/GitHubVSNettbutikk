@@ -1,0 +1,30 @@
+﻿@model Nettbutikkprosjekt.Models.Produkt
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Produkt</title>
+</head>
+<body>
+    <div>
+        <h1>@Model.navn</h1>
+        <img width="770px" height="500px" id="sykkling" src="../../Bilder/@Model.kategori/@Model.path" />
+        <table>
+
+
+
+            <tr>
+                <td><h3>@Model.beskrivelse</h3></td>
+                <td style="padding-left:30px;"><h1>@Convert.ToInt32(Model.pris),-</h1></td>
+                <td style="padding-left:30px;" align="center" ;><h3>@Html.ActionLink("Legg i handlekurv", "AddToCart", "Shoppingcart", new { id = Model.produktid }, "")</h3></td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+</html>
