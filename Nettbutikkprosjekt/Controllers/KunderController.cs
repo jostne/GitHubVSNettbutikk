@@ -295,6 +295,7 @@ namespace Nettbutikkprosjekt.Controllers
         }
         public ActionResult Home()
         {
+            //her kommer det en endring
             return View();
         }
 
