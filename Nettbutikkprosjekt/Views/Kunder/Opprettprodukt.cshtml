@@ -1,4 +1,4 @@
-﻿@model Nettbutikkprosjekt.Models.Produkt
+﻿@model Model.Produkten
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -22,6 +22,14 @@
                 <tr><td><input type="submit" value="Opprett produkt" /></td></tr>
             </table>
         </form>
+    </div>
+    <div>
+        @using (Html.BeginForm("lastopp", "Kunder", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <label for="file">Last opp bilde</label>
+            <input type="file" name="fil" id="fil" style="width: 100%;" />
+            <input type="submit" value="Last opp" class="submit" />
+        }
     </div>
 </body>
 </html>

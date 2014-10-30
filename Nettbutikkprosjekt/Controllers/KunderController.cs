@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Nettbutikkprosjekt.Models;
+using Model;
+using System.IO;
+using BLL;
 
 namespace Nettbutikkprosjekt.Controllers
 {
@@ -11,10 +13,55 @@ namespace Nettbutikkprosjekt.Controllers
     {
         //
         // GET: /Kunder/
-        public ActionResult send()
+        
+        public ActionResult administrator()
         {
-            Session["Navn"] = "Hei din dritt";
-            return RedirectToAction("info");
+            if (Session["Admin"] != null)
+            {
+                if ((bool)Session["Admin"] == true)
+                {
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+            
+        }
+        public ActionResult adminlogg()
+        {
+            if (Session["Admin"] == null)
+            {
+                Session["Admin"] = false;
+                ViewBag.admin = false;
+            }
+            else
+            {
+                ViewBag.admin = (bool)Session["Admin"];
+            }
+            return View();
+        }
+        [HttpPost]
+        public ActionResult adminlogg(sikkerAdmin innadmin)
+        {
+            if (Admin_i_DB(innadmin))
+            {
+                Session["Admin"] = true;
+                ViewBag.admin = true;
+                Session["Administrator"] = innadmin.brukernavn;
+                return RedirectToAction("adminlogg");
+            }
+            else
+            {
+                Session["Admin"] = false;
+                ViewBag.admin = false;
+                return View();
+            }
         }
         public ActionResult Index()
         {
@@ -30,7 +77,7 @@ namespace Nettbutikkprosjekt.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Index(Models.Sikkerkunde innkunde)
+        public ActionResult Index(Kunde innkunde)
         {
             if (Bruker_i_DB(innkunde))
             {
@@ -46,24 +93,38 @@ namespace Nettbutikkprosjekt.Controllers
                 return View();
             }
         }
-        private static bool Bruker_i_DB(Models.Sikkerkunde innkunde)
+        private static bool Bruker_i_DB(Kunde innkunde)
         {
-            using (var db = new Models.Kundecontext())
-            {   
-                byte[] passordDb = lagHash(innkunde.passord);
-                var funnetkunde = db.kundene.FirstOrDefault
-                    (b => b.passord == passordDb && b.epost == innkunde.epost);
-                if (funnetkunde == null)
-                {
-                    return false;
-                }
-                    
-                else
+                
+                var Kundebll = new KundeBLL();
+                if (Kundebll.Bruker_I_DB(innkunde))
                 {
                     return true;
                 }
                     
-            }
+                else
+                {
+                    return false;
+                }
+                    
+            
+        }
+
+        private static bool Admin_i_DB(sikkerAdmin innadmin)
+        {
+            
+                var Kundebll = new KundeBLL();
+                if (Kundebll.Admin_I_DB(innadmin))
+                {
+                    return true;
+                }
+
+                else
+                {
+                    return false;
+                }
+
+            
         }
         public ActionResult innlogget()
         {
@@ -72,15 +133,19 @@ namespace Nettbutikkprosjekt.Controllers
            if (Session["LoggetInn"] != null)
             {
                 bool loggetinn = (bool)Session["LoggetInn"];
+                var Kundebll = new KundeBLL();
                 if (loggetinn)
                 {
-                    var db = new Models.Kundecontext();
+                    
                     string navn = (string)Session["Bruker"];
-                    var kunden = db.kundene.FirstOrDefault(p => p.epost == navn);
-                    List<Models.Bestilling> Listeavprodukter = db.bestillingene.Where(p => p.kundeid.kundeid == kunden.kundeid).ToList();
-                    ViewData.Model = Listeavprodukter;
+                    
+                      //ViewData.Model = Kundebll.finnordre(navn);
                     //return View();
-                    return View("innlogget");
+                    
+
+                    
+                    ViewData.Model = Kundebll.finnordre(navn);
+                    return View();
                 }
             }
             return RedirectToAction("Index");
@@ -97,19 +162,26 @@ namespace Nettbutikkprosjekt.Controllers
         }*/
         public ActionResult ListAlleKunder()
         {
-
-            return RedirectToAction("Home");
+            var Kundebll = new KundeBLL();
+            ViewData.Model = Kundebll.hentalle();
+            //return View(Kundebll.hentalle());
+            return View();
         }
+        public ActionResult ListAlleOrdre()
+        {
+            var Kundebll = new KundeBLL();
+            return View(Kundebll.hentordre());
+        }
+        
         public ActionResult endreBruker()
         {
+            var Kundebll = new KundeBLL();
             bool loggetinn = (bool)Session["LoggetInn"];
             if (loggetinn)
             {
-                var db = new Models.Kundecontext();
                 string navnet = (string)Session["Bruker"];
-                Models.Kunder person = db.kundene.FirstOrDefault(p => p.epost == navnet);
                 //var person = db.kundene.Find(Session["Bruker"]);
-                return View(person);
+                return View(Kundebll.finnkundemednavn(navnet));
             }
             else
             {
@@ -117,36 +189,68 @@ namespace Nettbutikkprosjekt.Controllers
             }
         }
         [HttpPost]
-        public ActionResult endreBruker(Models.Sikkerkunde innbruker)
+        public ActionResult endreBruker(Kunde innbruker)
+        {
+            var Kundebll = new KundeBLL();
+            if(Kundebll.endrekunde(innbruker))
+            {
+                return RedirectToAction("Innlogget");
+            } 
+            else
+            {
+                return View();
+            }
+        }
+        public ActionResult endreAdmin(int id)
+        {
+            bool loggetinn = (bool)Session["Admin"];
+
+            if (loggetinn)
+            {
+                var Kundebll = new KundeBLL();
+                string navnet = (string)Session["Bruker"];
+                
+                if (Kundebll.finnbruker1(id))
+                {
+                    return View(Kundebll.finnkunde(id));
+
+                }
+                else
+                {
+                    return RedirectToAction("ListAlleKunder");
+                }
+                
+                
+                
+            }
+            else
+            {
+                return RedirectToAction("ListAlleKunder");
+            }
+        }
+        [HttpPost]
+        public ActionResult endreAdmin(Kunde innbruker)
         {
             try
             {
-                using (var db = new Models.Kundecontext())
-                {
-                    
+                
+
                     string navnet = (string)Session["Bruker"];
-                    Models.Kunder funnetperson = db.kundene.FirstOrDefault(p => p.epost == navnet);
-                    //var funnetperson = db.kundene.FirstOrDefault(p => p.epost == navnet);
-                    if (funnetperson == null)
+                    var Kundebll = new KundeBLL();
+                    var funnetperson = Kundebll.finnkunde(Kundebll.finnid(navnet));
+                    
+                   
+                    if (Kundebll.endreadmin(funnetperson))
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("ListAlleKunder");
+                        
                     }
                     else
                     {
-                            funnetperson.adresse = innbruker.adresse;
-                            funnetperson.epost = innbruker.epost;
-                            funnetperson.etternavn = innbruker.etternavn;
-                            funnetperson.fornavn = innbruker.fornavn;
-                            byte[] passordDb = lagHash(innbruker.passord);
-                            funnetperson.passord = passordDb;
-                            funnetperson.postnr = innbruker.postnr;
-                            funnetperson.poststed = innbruker.poststed;
-                            funnetperson.telefonnr = innbruker.telefonnr;
-                            db.SaveChanges();
-                            return RedirectToAction("Innlogget");
+                        return RedirectToAction("Index");
 
                     }
-                }
+                
             }
             catch (Exception feil)
             {
@@ -162,54 +266,72 @@ namespace Nettbutikkprosjekt.Controllers
         {
             try
             {
-                using (var db = new Models.Kundecontext())
-                {
-                    var nyttProduk = new Models.Produkt();
-                    nyttProduk.navn = innProdukt["produktnavn"];
-                    decimal prisen = decimal.Parse(innProdukt["pris"]);
-                    nyttProduk.beskrivelse = innProdukt["beskrivelse"];
-                    nyttProduk.kategori = innProdukt["kategori"];
-                    nyttProduk.path = innProdukt["path"];
-                    nyttProduk.pris = prisen;
-                    db.produkter.Add(nyttProduk);
-                    db.SaveChanges();
-                    return RedirectToAction("ListAlleKunder");
-                }
+                var Kundebll = new KundeBLL();
+                Kundebll.opprettprodukt(innProdukt);
+                return RedirectToAction("ListAlleKunder");
+                
             }
             catch (Exception feil)
             {
                 return View();
             }
         }
+
+        public ActionResult lastopp(HttpPostedFileBase fil) 
+        {
+            if (fil != null)
+            {
+                string bilde = System.IO.Path.GetFileName(fil.FileName);
+                string path = System.IO.Path.Combine(Server.MapPath("~/Bilder"), bilde);
+                fil.SaveAs(path);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    fil.InputStream.CopyTo(ms);
+                    byte[] array = ms.GetBuffer();
+                }
+            }
+            return RedirectToAction("Opprettprodukt");
+        }
         public ActionResult sykkel()
         {
-            var db = new Models.Kundecontext();
-            List<Models.Produkt> Listeavprodukter = db.produkter.ToList();
-            ViewData.Model = Listeavprodukter;
+            var Kundebll = new KundeBLL();
+            ViewData.Model = Kundebll.sykkel();
             return View();
         }
         public ActionResult del()
         {
-            var db = new Models.Kundecontext();
-            List<Models.Produkt> Listeavdeler = db.produkter.ToList();
-            ViewData.Model = Listeavdeler;
+            var Kundebll = new KundeBLL();
+            ViewData.Model = Kundebll.del();
             return View();
         }
 
         public ActionResult info(int id){
-            var db = new Models.Kundecontext();
-            Models.Produkt produkt = db.produkter.Find(id);
-            if (produkt == null)
+            var Kundebll = new KundeBLL();
+            var infoen = Kundebll.info(id);
+            if (infoen == null)
             {
                 return HttpNotFound();
             }
-            return View(produkt);
+            return View(infoen);
+        }
+        public ActionResult slett(int id)
+        {
+            var Kundebll = new KundeBLL();
+            if (Kundebll.slett(id))
+            {
+                return RedirectToAction("ListAlleKunder");
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+            
         }
         public ActionResult utstyr()
         {
-            var db = new Models.Kundecontext();
-            List<Models.Produkt> Listeavdeler = db.produkter.ToList();
-            ViewData.Model = Listeavdeler;
+            var Kundebll = new KundeBLL();
+            ViewData.Model = Kundebll.utstyr();
             return View();
         }
         private static byte[] lagHash(string innpassord)
@@ -220,12 +342,13 @@ namespace Nettbutikkprosjekt.Controllers
             utData = algoritme.ComputeHash(innData);
             return utData;
         }
-        public ActionResult OprettBruker()
+        public ActionResult opprettAdmin()
         {
             return View();
-        }
-        [HttpPost]
-        public ActionResult OprettBruker(Models.Sikkerkunde innkunde)
+        } 
+        [HttpPost] 
+        
+        public ActionResult opprettAdmin(sikkerAdmin innadmin)
         {
             if (!ModelState.IsValid)
             {
@@ -233,53 +356,33 @@ namespace Nettbutikkprosjekt.Controllers
             }
             try
             {
-                using (var db = new Models.Kundecontext())
-                {
 
-                    var nyKunde = new Models.Kunder();
-                    byte[] passordDb = lagHash(innkunde.passord);
-                    nyKunde.passord = passordDb;
-                    nyKunde.fornavn = innkunde.fornavn;
-                    nyKunde.etternavn = innkunde.etternavn;
-                    nyKunde.epost = innkunde.epost;
-                    nyKunde.adresse = innkunde.adresse;
-                    nyKunde.telefonnr = innkunde.telefonnr;
-
-                    string innpostnr = innkunde.postnr;
-                    /*nyKunde.fornavn = innListe["fornavn"];
-                    nyKunde.etternavn = innListe["etternavn"];
-                    nyKunde.adresse = innListe["adresse"];
-                    nyKunde.epost = innListe["epost"];
-                    nyKunde.passord = innListe["passord"];
-                    string innpostnr = innListe["postnr"];
-                    string inntlf = innListe["telefonnr"];*/
-
-                    var funnetPoststed = db.poststedene.FirstOrDefault(p => p.postnr == innpostnr.ToString());
-                    if (funnetPoststed == null)
-                    {
-                        var nyttPoststed = new Models.Poststed();
-                        nyttPoststed.postnr = innkunde.postnr.ToString();
-                        nyttPoststed.poststed = innkunde.poststed.ToString();
-                        //nyttPoststed.postnr = innkunde["postnr"];
-                        //nyttPoststed.poststed = innListe["poststed"];
-                        db.poststedene.Add(nyttPoststed);
-                        nyKunde.poststed = nyttPoststed;
-                        nyKunde.postnr = innkunde.postnr;
-                        //nyKunde.postnr = int.Parse(innListe["postnr"]);
-                    }
-                    else
-                    {
-                        nyKunde.poststed = funnetPoststed;
-                        nyKunde.postnr = innkunde.postnr;
-                        //nyKunde.postnr = int.Parse(innListe["postnr"]);
-                    }
-                    db.kundene.Add(nyKunde);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-
-
-
-                }
+                var Kundebll = new KundeBLL();
+                Kundebll.opprettAdmin(innadmin);
+                return RedirectToAction("adminlogg");
+                
+            }
+            catch (Exception feil)
+            {
+                return View();
+            }
+        }
+        public ActionResult OprettBruker()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult OprettBruker(Kunde innkunde)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            try
+            {
+                var Kundebll = new KundeBLL();
+                Kundebll.opprettBruker(innkunde);
+                return RedirectToAction("Index"); 
             }
             catch (Exception feil)
             {
@@ -291,6 +394,7 @@ namespace Nettbutikkprosjekt.Controllers
             Session.Clear();
             Session.Abandon();
             Session.RemoveAll();
+            Session["Admin"] = false;
             return RedirectToAction("Index");
         }
         public ActionResult Home()

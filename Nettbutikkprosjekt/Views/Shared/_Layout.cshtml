@@ -20,7 +20,10 @@
                     <h2>@Html.ActionLink("Registrer", "OprettBruker", "Kunder", new { @class = "menu-item float-right" })</h2>
 
                     <h2>@Html.ActionLink("Min side", "innlogget", "Kunder", new { @class = "menu-item float-right" })</h2>
-
+                    @{if (Session["Admin"] != null)
+                      {
+                          if ((bool)Session["Admin"])
+                    { <h2>@Html.ActionLink("Administrator", "administrator", "Kunder", new { @class = "menu-item float-right" })</h2>}}}
                 </nav>
 
 

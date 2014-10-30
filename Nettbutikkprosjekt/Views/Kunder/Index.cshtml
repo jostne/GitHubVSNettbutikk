@@ -1,4 +1,4 @@
-﻿@model Nettbutikkprosjekt.Models.Sikkerkunde
+﻿@model Model.Kunde
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -56,6 +56,7 @@
             }
         </fieldset>
     }
+    <h2>@Html.ActionLink("Logg inn administrator", "adminlogg", "Kunder", new { @class = "menu-item float-right" })</h2>
     
 </body>
 </html>

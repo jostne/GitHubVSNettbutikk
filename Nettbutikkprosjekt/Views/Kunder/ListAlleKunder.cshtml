@@ -1,4 +1,4 @@
-﻿@model List<Nettbutikkprosjekt.Models.Kunder>
+﻿@model List<Model.Kunde>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -15,6 +15,15 @@
         <h3>Her er alle kundene i databasen</h3>
 
         <table>
+            <tr>
+                <td><h3>KundeId</h3></td>
+                <td><h3>Epost/Brukernavn</h3></td>
+                <td><h3>Fornavn</h3></td>
+                <td><h3>Etternavn</h3></td>
+                <td><h3>Postnr</h3></td>
+                <td><h3>Adresse</h3></td>
+                <td><h3>Poststed</h3></td>
+            </tr>
             @foreach (var kunder in Model)
             {
                 <tr>
@@ -24,14 +33,10 @@
                     <td>@kunder.etternavn</td>
                     <td>@kunder.postnr</td>
                     <td>@kunder.adresse</td>
-                    <td>@kunder.poststed.poststed</td>
-
+                    <td>@kunder.poststed</td>
+                    <td><a>@Html.ActionLink("Endre", "endreAdmin", new { id = kunder.kundeid })</a></td>
+                    <td><a>@Html.ActionLink("Slett", "slett", new { id = kunder.kundeid })</a></td>
                 </tr>
             }
-        </table>
-        @ViewBag.Melding
-        <a href="/Kunder/OprettBruker ">Opprett kunde</a><br />
-        <a href="/Kunder/Opprettprodukt ">Opprett produkt</a>
-    </div>
 </body>
 </html>
