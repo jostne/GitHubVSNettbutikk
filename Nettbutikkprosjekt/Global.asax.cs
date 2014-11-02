@@ -11,7 +11,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Data.Entity;
 using Model;
-using DAL;
+//using DAL;
 
 namespace Nettbutikkprosjekt
 {
@@ -23,7 +23,7 @@ namespace Nettbutikkprosjekt
         protected void Application_Start(object sender, EventArgs e)
         {
             AreaRegistration.RegisterAllAreas();
-            Database.SetInitializer<Kundecontext>(null);
+            //Database.SetInitializer<Kundecontext>(null);
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

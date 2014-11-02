@@ -19,8 +19,8 @@
       
                    <h2> @Html.ActionLink("Registrer", "OprettBruker", "Kunder", new { area = "Kunder" }, new { @class = "menu-item float-right" })</h2>
 
-                    <h2> @Html.ActionLink("Min side", "innlogget", "Kunder",new {are = "Kunder"}, new { @class = "menu-item float-right" })</h2>
-
+                    <h2> @Html.ActionLink("Min side", "innlogget", "Kunder",new {area = "Kunder"}, new { @class = "menu-item float-right" })</h2>
+                    <h2>@Html.ActionLink("Handlekurv", "Index", "Shoppingcart", new { area = "ShoppingCart"}, new { @class = "menu-item float-right" })</h2>
 
                 </nav>
 

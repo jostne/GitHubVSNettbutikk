@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    class ShoppingCartRemoveViewModel
+    public class ShoppingCartRemoveViewModel
     {
         
             public string Message { get; set; }

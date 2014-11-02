@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Model;
 namespace DAL
 {
-    class ShoppingCart
+    public class ShoppingCart
     {
         
             Kundecontext storeDB = new Kundecontext();
@@ -19,23 +20,36 @@ namespace DAL
                 cart.ShoppingCartId = cart.GetCartId(context);
                 return cart;
             }
+           
             // Helper method to simplify shopping cart calls
             public static ShoppingCart GetCart(Controller controller)
             {
                 return GetCart(controller.HttpContext);
             }
-            public void AddToCart(Produkt produt)
+            public Produkt getAlbum(int id)
+            {
+                var addedAlbum = storeDB.produkter
+                .Single(album => album.produktid == id);
+                return addedAlbum;
+            }
+            public string getname(int id)
+            {
+                string albumName = storeDB.vogner
+                .Single(item => item.viktigid == id).produkt.navn;
+                return albumName;
+            }
+            public vogn AddToCart(int produt)
             {
                 // Get the matching cart and produt instances
                 var cartItem = storeDB.vogner.SingleOrDefault(
                     c => c.vognid == ShoppingCartId
-                    && c.produktid == produt.produktid);
+                    && c.produktid == produt);
                 if (cartItem == null)
                 {
                     // Create a new cart item if no cart item exists
                     cartItem = new vogn
                     {
-                        produktid = produt.produktid,
+                        produktid = produt,
                         vognid = ShoppingCartId,
                         antall = 1,
                         datolaget = DateTime.Now
@@ -50,6 +64,7 @@ namespace DAL
                 }
                 // Save changes
                 storeDB.SaveChanges();
+                return cartItem;
             }
 
             public int RemoveFromCart(int id)

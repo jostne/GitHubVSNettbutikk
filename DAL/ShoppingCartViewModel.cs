@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    class ShoppingCartViewModel
+    public class ShoppingCartViewModel
     {
         
             public List<vogn> vognitem { get; set; }
