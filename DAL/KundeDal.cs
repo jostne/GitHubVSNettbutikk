@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Model;
 using System.Web.Mvc;
 using System.IO;
-// her er det endring
+
 
 namespace DAL
 {
